@@ -1,0 +1,10 @@
+.skill-bar {
+    height: 6px;
+    border-radius: 3px;
+    transition: width 1s ease-in-out;
+}
+
+.section {
+    min-height: 100vh;
+    padding-top: 80px;
+}
