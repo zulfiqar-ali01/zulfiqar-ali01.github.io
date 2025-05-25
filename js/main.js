@@ -24,11 +24,8 @@ sections.forEach(section => {
             cssLink.href = `css/${section}.css`;
             document.head.appendChild(cssLink);
 
-            if (section === 'home') {
-                contentDiv.prepend(sectionDiv); // insert at the beginning
-            } else {
-                contentDiv.appendChild(sectionDiv);
-            }
+            // Always append sections in order, contact will be last
+            contentDiv.appendChild(sectionDiv);
         });
 });
 
@@ -56,8 +53,6 @@ window.addEventListener('scroll', function() {
     });
 });
 
-
- 
 
 // Intersection Observer for fade-in animations
 document.addEventListener('DOMContentLoaded', function() {
