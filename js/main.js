@@ -1,8 +1,25 @@
+// Helper to initialize navigation events after dynamic load
+function initNavigationEvents() {
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(item => {
+            item.addEventListener('click', function () {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    }
+}
+
 // Load navigation
 fetch('sections/navigation.html')
     .then(response => response.text())
     .then(data => {
         document.getElementById('main-nav').innerHTML = data;
+        initNavigationEvents(); // Ensure toggle works after load
     });
 
 
