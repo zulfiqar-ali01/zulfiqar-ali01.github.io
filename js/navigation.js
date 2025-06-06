@@ -20,31 +20,50 @@ fetch('sections/navigation.html')
     .then(data => {
         document.getElementById('main-nav').innerHTML = data;
         initNavigationEvents(); // Ensure toggle works after load
+        // Make navigation bar sticky/floating
+        const nav = document.querySelector('header.fixed');
+        if (nav) {
+            nav.classList.add('backdrop-blur-md', 'bg-white/80', 'shadow-lg');
+            nav.style.transition = 'box-shadow 0.3s, background 0.3s';
+            nav.style.height = 'auto';
+            nav.style.padding = '0';
+            nav.style.fontSize = '1rem';
+            nav.style.lineHeight = '1.5';
+            nav.style.marginBottom = '0'; // Remove extra bottom margin
+            nav.style.boxShadow = '0 2px 8px 0 rgba(0,0,0,0.07)'; // Subtle shadow only
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 10) {
+                    nav.classList.add('shadow-xl', 'bg-white/90');
+                } else {
+                    nav.classList.remove('shadow-xl', 'bg-white/90');
+                }
+            });
+        }
     });
 
 
-// Load all sections
+// Load all sections in the correct order and prevent duplicate appends
 const sections = ['home','experience', 'projects', 'publications', 'skills',  'contact'];
 const contentDiv = document.getElementById('content');
 
-sections.forEach(section => {
-    fetch(`sections/${section}.html`)
-        .then(response => response.text())
-        .then(data => {
-            const sectionDiv = document.createElement('div');
-            sectionDiv.id = section;
-            sectionDiv.className = 'section';
-            sectionDiv.innerHTML = data;
-
-            const cssLink = document.createElement('link');
-            cssLink.rel = 'stylesheet';
-            cssLink.href = `css/${section}.css`;
-            document.head.appendChild(cssLink);
-
-            // Always append sections in order, contact will be last
-            contentDiv.appendChild(sectionDiv);
-        });
-});
+(async function loadSections() {
+    for (const section of sections) {
+        const response = await fetch(`sections/${section}.html`);
+        const data = await response.text();
+        // Remove any existing section with the same id to prevent duplicates
+        const oldSection = document.getElementById(section);
+        if (oldSection) oldSection.remove();
+        const sectionDiv = document.createElement('div');
+        sectionDiv.id = section;
+        sectionDiv.className = 'section';
+        sectionDiv.innerHTML = data;
+        const cssLink = document.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.href = `css/${section}.css`;
+        document.head.appendChild(cssLink);
+        contentDiv.appendChild(sectionDiv);
+    }
+})();
 
 // Navigation active state
 window.addEventListener('scroll', function() {
